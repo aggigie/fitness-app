@@ -1,0 +1,12 @@
+<h1>wprowadz produkt</h1>
+{% if debug %}
+{{debug}}
+{% endif %}
+<form action="" method="post">
+{% csrf_token %}
+    <label for="product_name">podaj nazwe</label>
+    <input type="text" name="product_name" id="product_name"><br>
+    <label for="calories">podaj wartosc kaloryczna</label>
+    <input type="text" name="calories" id="calories" value="0"><br>
+    <input type="submit" value="zatwierdz">
+</form>

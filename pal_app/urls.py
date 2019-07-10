@@ -4,4 +4,5 @@ from pal_app import views
 
 urlpatterns = [
     path('addProduct/', views.add_product),
+    path('Products/', views.show_products),
 ]
