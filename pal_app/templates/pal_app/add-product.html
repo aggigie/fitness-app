@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h1>wprowadz produkt</h1>
+{% if debug %}
+{{debug}}
+{% endif %}
+<div class="row">
+    <div class="col-sm-4">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="product_name">Podaj nazwę produktu</label>
+                <input type="text" class="form-control" name="product_name" id="product_name"
+                       placeholder="product name">
+            </div>
+            <div class="form-group">
+                <label for="calories">Podaj wartosc kaloryczna</label>
+                <input type="number" class="form-control" name="calories" id="calories"
+                       aria-describedby="descriptionHelp" value="0">
+                <small id="descriptionHelp" class="form-text text-muted">Wartosc kaloryczna na 100g produktu.</small>
+            </div>
+            <button type="submit" class="btn btn-dark">Zatwierdz</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
