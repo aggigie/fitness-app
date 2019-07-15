@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>dane użytkownika</h1>
+{% if debug %}
+{{debug}}
+{% endif %}
+<div class="row">
+    <div class="col-sm-4">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="user_name">Podaj nazwę uzytkownika</label>
+                <input type="text" class="form-control" name="user_name" id="user_name"
+                       placeholder="username">
+            </div>
+            <div class="form-group">
+                <label for="height">Wprowadz wzrost</label>
+                <input type="number" class="form-control" name="height" id="height"
+                       aria-describedby="descriptionHelp" placeholder="height">
+                <small id="descriptionHelp" class="form-text text-muted">Wzrost w cm.</small>
+            </div>
+            <div class="form-group">
+                <label for="weight">Wprowadz wage</label>
+                <input type="number" class="form-control" name="weight" id="weight"
+                       aria-describedby="descriptionHeightHelp" placeholder="weight">
+                <small id="descriptionHeightHelp" class="form-text text-muted">Waga w kg.</small>
+            </div>
+            <div class="form-group">
+                <label for="age">Wprowadz wiek</label>
+                <input type="number" class="form-control" name="age" id="age"
+                       placeholder="age">
+            </div>
+            <div class="form-group">
+                <label>Wybierz plec</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sex" id="inlineRadio1"
+                           value="k">
+                    <label class="form-check-label" for="inlineRadio1">K</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sex" id="inlineRadio2"
+                           value="m">
+                    <label class="form-check-label" for="inlineRadio2">M</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Zatwierdz</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

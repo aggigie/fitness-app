@@ -1,5 +1,5 @@
-from pal_app.models import Product
-from django.shortcuts import render
+from pal_app.models import Product, User
+from django.shortcuts import render, redirect
 
 
 def show_products(request):
@@ -22,4 +22,24 @@ def add_product(request):
 
 
 def main(request):
-    return render(request, 'pal_app/add-user-data.html')
+    if User.objects.count() == 0:
+        response = redirect('/user-data')
+    else:
+        response = render(request, 'pal_app/fitness-app.html')
+    return response
+
+
+def user_data(request):
+    try:
+        user_name = request.POST['user_name']
+        height = request.POST['height']
+        weight = request.POST['weight']
+        age = request.POST['age']
+        sex = request.POST['sex'] == 'm'
+        ud = User(user_name=user_name, height=height, weight=weight, age=age, sex=sex)
+        ud.save()
+    except KeyError:
+        return render(request, 'pal_app/user-data.html')
+    return render(request, 'pal_app/user-data.html', {
+        'debug': "dodawanie przebieglo pomyslnie"
+    })
