@@ -1,4 +1,5 @@
 from django.db import models
+from enum import Enum
 
 
 class Product(models.Model):
@@ -15,3 +16,16 @@ class User(models.Model):
     height = models.IntegerField()
     age = models.IntegerField()
     sex = models.BooleanField()
+
+
+class MealChoice(Enum):
+    Breakfast = 1
+    Lunch = 2
+    Dinner = 3
+    Snacks = 4
+
+
+class Meal(models.Model):
+    meal_type = models.IntegerField
+    day = models.DateField
+    products = models.ManyToManyField(Product)

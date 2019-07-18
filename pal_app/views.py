@@ -1,4 +1,4 @@
-from pal_app.models import Product, User
+from pal_app.models import Product, User, MealChoice
 from django.shortcuts import render, redirect
 
 
@@ -43,3 +43,12 @@ def user_data(request):
     return render(request, 'pal_app/user-data.html', {
         'debug': "dodawanie przebieglo pomyslnie"
     })
+
+
+def meal_data(request, meal_type):
+    try:
+        result = MealChoice(meal_type)
+        context = {'id': result.name}
+        return render(request, 'pal_app/meal-data.html', context)
+    except ValueError:
+        return render(request, 'pal_app/meal-data.html')

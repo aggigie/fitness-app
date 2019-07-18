@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="row">
+    <div class="col-sm-8">
+        <h1>Posiłki</h1>
+        {% if id %}
+        <p>{{id}}</p>
+        {% else %}
+        <p>ni ma produktow panie</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
