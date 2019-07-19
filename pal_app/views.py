@@ -46,9 +46,21 @@ def user_data(request):
 
 
 def meal_data(request, meal_type):
+    context = {}
+    product_list = Product.objects.all()
+    context['product_list'] = product_list
+
     try:
         result = MealChoice(meal_type)
-        context = {'id': result.name}
-        return render(request, 'pal_app/meal-data.html', context)
+        context['id'] = result.name
+        context['no'] = meal_type
+
     except ValueError:
-        return render(request, 'pal_app/meal-data.html')
+        return redirect('/')
+    # if request.method == "POST":
+    try:
+        selected = request.POST.getlist("products")
+        print(selected)
+    except KeyError:
+        return render(request, 'pal_app/meal-data.html', context)
+    return render(request, 'pal_app/meal-data.html', context)

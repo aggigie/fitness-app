@@ -2,9 +2,21 @@
 {% block body %}
 <div class="row">
     <div class="col-sm-8">
-        <h1>Posiłki</h1>
         {% if id %}
-        <p>{{id}}</p>
+        <h1>{{ id }}</h1>
+        {% else %}
+        <p>ni ma posilka</p>
+        {% endif %}
+        <form action="/meal/{{no}}/" method="post">
+            {% csrf_token %}
+
+            {% if product_list %}
+            {% for product in product_list %}
+            <input type="checkbox" name="products" value="{{product.id}}">{{product}}<br>
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+
         {% else %}
         <p>ni ma produktow panie</p>
         {% endif %}
