@@ -26,6 +26,10 @@ class MealChoice(Enum):
 
 
 class Meal(models.Model):
-    meal_type = models.IntegerField
-    day = models.DateField
+    meal_type = models.IntegerField(default=0)
+    day = models.DateField(auto_now=True)
     products = models.ManyToManyField(Product)
+
+    def __str__(self):
+        chosen_products = ", ".join(str(product) for product in self.products.all())
+        return "{},{}".format(self.day, chosen_products)

@@ -2,12 +2,12 @@
 {% block body %}
 <div class="row">
     <div class="col-sm-8">
-        {% if id %}
-        <h1>{{ id }}</h1>
+        {% if meal_name %}
+        <h1>{{ meal_name }}</h1>
         {% else %}
         <p>ni ma posilka</p>
         {% endif %}
-        <form action="/meal/{{no}}/" method="post">
+        <form action="/meal/{{meal_id}}/" method="post">
             {% csrf_token %}
 
             {% if product_list %}
