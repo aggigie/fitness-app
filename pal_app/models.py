@@ -7,7 +7,7 @@ class Product(models.Model):
     calories = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name}  -  {str(self.calories)} cal/100g"
+        return f"{self.id}:{self.name}  -  {str(self.calories)} cal/100g"
 
 
 class User(models.Model):

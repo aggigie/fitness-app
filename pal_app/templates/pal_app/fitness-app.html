@@ -1,4 +1,24 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>do dokonczenia</h1>
+<div class="row">
+    <div class="col-8">
+        <h1>Hi, {{ user.user_name }}!</h1>
+        <h3>Your goal for today: {{ goal }} cal</h3>
+        <h5>{{ calories_left }} calories left</h5>
+    </div>
+    <div class="col-4">
+        <h5>{{ date }}</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 pt-5 pl-5">
+        {% if cal_of_meals %}
+            {% for meal, cal in cal_of_meals.items %}
+            <a class="btn btn-dark" href="/meal/{{meal.value}}">{{ meal.name }}</a>
+            <h5 class="pb-3">{{ cal }} calories</h5>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div align="top_right"></div>
 {% endblock %}
