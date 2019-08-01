@@ -14,7 +14,7 @@ class User(models.Model):
     user_name = models.CharField(max_length=20)
     weight = models.IntegerField()
     height = models.IntegerField()
-    age = models.IntegerField()
+    age = models.DateField()
     sex = models.BooleanField()
 
 

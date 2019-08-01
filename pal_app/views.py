@@ -1,5 +1,4 @@
 import datetime
-
 from django.core.exceptions import ObjectDoesNotExist
 from pal_app.models import Product, User, MealChoice, Meal
 from django.shortcuts import render, redirect
@@ -20,7 +19,7 @@ def add_product(request):
     except KeyError:
         return render(request, 'pal_app/add-product.html')
     return render(request, 'pal_app/add-product.html', {
-        'debug': "dodawanie przebieglo pomyslnie"
+        'debug': "Successfully added to database."
     })
 
 
@@ -28,8 +27,19 @@ def today():
     return datetime.datetime.now().strftime("%Y-%m-%d")
 
 
+def age(born):
+    today = datetime.date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
+
 def calc_intake():
-    pass
+    user = User.objects.first()
+    if user.sex:
+        BMR = 88.362 + (13.397 * user.weight) + (4.799 * user.height) - (5.677 * age(user.age))
+    else:
+        BMR = 447.593 + (9.247 * user.weight) + (3.098 * user.height) - (4.330 * age(user.age))
+    cal = BMR
+    return int(cal)
 
 
 def calc_meal(meal_type):
@@ -48,18 +58,16 @@ def main(request):
         response = redirect('/user-data')
     else:
         obj = User.objects.first()
-        goal = 0
-        calories_left = 0
+        goal = calc_intake()
         todays_intake = 0
         meal_cal = {}
         for meal_type in MealChoice:
             meal_cal[meal_type] = calc_meal(meal_type)
             todays_intake += meal_cal[meal_type]
-        print(meal_cal)
         context = {'user': obj,
                    'date': today(),
                    'goal': goal,
-                   'calories_left': goal - todays_intake,
+                   'calories_left': int(goal - todays_intake),
                    'cal_of_meals': meal_cal
                    }
         response = render(request, 'pal_app/fitness-app.html', context)
@@ -73,12 +81,23 @@ def user_data(request):
         weight = request.POST['weight']
         age = request.POST['age']
         sex = request.POST['sex'] == 'm'
-        ud = User(user_name=user_name, height=height, weight=weight, age=age, sex=sex)
+        msg = ''
+        if User.objects.count() == 0:
+            ud = User(user_name=user_name, height=height, weight=weight, age=age, sex=sex)
+            msg = "Successfully added to database."
+        else:
+            ud = User.objects.first()
+            ud.user_name = user_name
+            ud.height = height
+            ud.weight = weight
+            ud.age = age
+            ud.sex = sex
+            msg = "Successfully updated your information."
         ud.save()
     except KeyError:
         return render(request, 'pal_app/user-data.html')
     return render(request, 'pal_app/user-data.html', {
-        'debug': "dodawanie przebieglo pomyslnie"
+        'debug': msg
     })
 
 
@@ -89,8 +108,6 @@ def meal_data(request, meal_type):
     try:
         meal = Meal.objects.get(meal_type=meal_type, day=today())
         context['selected'] = meal.products.all()
-        print(context['selected'])
-        print(product_list)
     except ObjectDoesNotExist:
         try:
             meal = Meal.objects.create(meal_type=meal_type)
