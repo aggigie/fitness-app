@@ -4,7 +4,13 @@
     <div class="col-8">
         <h1>Hi, {{ user.user_name }}!</h1>
         <h3>Your goal for today: {{ goal }} cal</h3>
-        <h5>{{ calories_left }} calories left</h5>
+        {% if calories_left < -10 %}
+        <h5 class="msg_warn">Watch out! {{ calories_left|stringformat:"+d"|slice:"1:" }} calories above the goal!</h5>
+        {% elif calories_left > 10 %}
+        <h5 class="msg_main">{{ calories_left|stringformat:"+d"|slice:"1:" }} calories left</h5>
+        {% else %}
+        <h5 class="msg_win">Target achieved! Well done! You've eaten {{intake}} calories.</h5>
+        {% endif %}
     </div>
     <div class="col-4">
         <h5>{{ date }}</h5>
@@ -13,10 +19,10 @@
 <div class="row">
     <div class="col-12 pt-5 pl-5">
         {% if cal_of_meals %}
-            {% for meal, cal in cal_of_meals.items %}
-            <a class="btn btn-dark" href="/meal/{{meal.value}}">{{ meal.name }}</a>
-            <h5 class="pb-3">{{ cal }} calories</h5>
-            {% endfor %}
+        {% for meal, cal in cal_of_meals.items %}
+        <a class="btn btn-dark" href="/meal/{{meal.value}}">{{ meal.name }}</a>
+        <h5 class="pb-3">{{ cal }} calories</h5>
+        {% endfor %}
         {% endif %}
     </div>
 </div>

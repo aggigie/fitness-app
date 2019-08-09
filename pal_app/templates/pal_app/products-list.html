@@ -7,8 +7,17 @@
         <ul class="list-group">
             {% for product in product_list %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{product.name}}
-                <span class="badge badge-dark badge-pill">{{product.calories}} cal / 100g</span>
+                <div class="col-sm-4">
+                    {{product.name}}
+                </div>
+                <div class="col-sm-2">
+                    <span class="badge badge-dark badge-pill">{{ product.calories}} cal / 100g</span>
+                </div>
+                <div class="col-sm-2">
+                    <a href="{% url 'remove_product' product_id=product.id %}" class="close btn" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
             </li>
             {% endfor %}
         </ul>

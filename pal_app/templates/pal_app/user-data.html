@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>Your account:</h1>
+{% if debug %}
+<br>
+<h3>{{debug}}</h3>
+{% else %}
+<h1>Set up your account:</h1>
 <div class="row">
     <div class="col-sm-4">
         <form action="" method="post">
@@ -8,44 +12,49 @@
             <div class="form-group">
                 <label for="user_name">Username</label>
                 <input type="text" class="form-control" name="user_name" id="user_name"
-                       placeholder="name">
+                       placeholder="name" {% if user %}value="{{user.user_name}}" {% endif %}>
             </div>
             <div class="form-group">
                 <label for="height">Your height</label>
                 <input type="number" class="form-control" name="height" id="height"
-                       aria-describedby="descriptionHelp" placeholder="height">
+                       aria-describedby="descriptionHelp" placeholder="height" {% if user %}value='{{user.height}}' {%
+                       endif %}>
                 <small id="descriptionHelp" class="form-text text-muted">In centimeters.</small>
             </div>
             <div class="form-group">
                 <label for="weight">Your weight</label>
                 <input type="number" class="form-control" name="weight" id="weight"
-                       aria-describedby="descriptionHeightHelp" placeholder="weight">
+                       aria-describedby="descriptionHeightHelp" placeholder="weight" {% if user
+                       %} value='{{user.weight}}' {% endif %}>
                 <small id="descriptionHeightHelp" class="form-text text-muted">In kilograms.</small>
             </div>
             <div class="form-group">
                 <label for="age">Birthday</label>
                 <input type="date" class="form-control" name="age" id="age"
-                       placeholder="age">
+                       placeholder="age" {% if user %} value='{{user.age|date:"Y-m-d"}}' {% endif %}>
             </div>
             <div class="form-group">
                 <label>Sex</label><br>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="sex" id="inlineRadio1"
-                           value="f">
+                           value="f" {% if user %} {% if user.sex %}checked{% endif %}{% endif %}>
                     <label class="form-check-label" for="inlineRadio1">F</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="sex" id="inlineRadio2"
-                           value="m">
+                           value="m" {% if user %} {% if user.sex %}checked{% endif %}{% endif %}>
                     <label class="form-check-label" for="inlineRadio2">M</label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-dark">Save</button>
+            <button type="submit" class="btn btn-dark">save <i class="fas fa-pencil-alt carrot"></i></button>
         </form>
     </div>
+    <div class="col-sm-2">
+        {% if user.user_name %}
+        <a href="{% url 'delete_user' %}" class="btn btn-dark"><i class="fas fa-user-slash carrot"></i>
+        delete account</a>
+        {% endif %}
+    </div>
 </div>
-{% if debug %}
-<br>
-<h6>{{debug}}</h6>
 {% endif %}
 {% endblock %}
