@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+{% load template_filters %}
 <div class="row">
     <div class="col-sm-12">
 
@@ -22,7 +23,8 @@
                     </div>
                 </div>
                 <div class="col">
-                    <input type="text" class="form-control" name="input_calories_{{product.id}}" placeholder="Enter amount in grams. {{product.calories}} cal/100g">
+                    <input type="text" class="form-control" name="input_calories_{{product.id}}" placeholder="Enter amount in grams. {{product.calories}} cal/100g"
+                     {% if product in selected %}value="{{amounts|get_item:product.id}}"{% endif %}>
                 </div>
             </div>
             {% endfor %}

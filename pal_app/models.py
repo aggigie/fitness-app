@@ -28,8 +28,14 @@ class MealChoice(Enum):
 class Meal(models.Model):
     meal_type = models.IntegerField(default=0)
     day = models.DateField(auto_now=True)
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, through="MealProducts")
 
     def __str__(self):
         chosen_products = ", ".join(str(product) for product in self.products.all())
         return "{},{}".format(self.day, chosen_products)
+
+
+class MealProducts(models.Model):
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0)

@@ -1,7 +1,13 @@
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
-from pal_app.models import Product, User, MealChoice, Meal
+from pal_app.models import Product, User, MealChoice, Meal, MealProducts
 from django.shortcuts import render, redirect
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 
 def show_products(request):
@@ -14,8 +20,7 @@ def add_product(request):
     try:
         product_name = request.POST['product_name']
         calories = request.POST['calories']
-        pn = Product(name=product_name, calories=calories)
-        pn.save()
+        Product(name=product_name, calories=calories).save()
     except KeyError:
         return render(request, 'pal_app/add-product.html')
     return render(request, 'pal_app/add-product.html', {
@@ -28,8 +33,8 @@ def today():
 
 
 def age(born):
-    today = datetime.date.today()
-    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    current_date = datetime.date.today()
+    return current_date.year - born.year - ((current_date.month, current_date.day) < (born.month, born.day))
 
 
 def calc_intake():
@@ -47,18 +52,16 @@ def calc_meal(meal_type):
     try:
         meal = Meal.objects.get(meal_type=meal_type.value, day=today())
         for product in meal.products.all():
-            value += product.calories
+            a = MealProducts.objects.get(meal=meal, product=product)
+            value += product.calories * a.amount / 100
     except ObjectDoesNotExist:
         pass
-    return value
+    return int(value)
 
 
 def delete_user(request):
-    user = User.objects.first()
-    user.delete()
-    meals = Meal.objects.filter(day=today())
-    for meal in meals:
-        meal.delete()
+    User.objects.first().delete()
+    Meal.objects.filter(day=today()).delete()
     return redirect('/')
 
 
@@ -68,25 +71,24 @@ def main(request):
     else:
         obj = User.objects.first()
         goal = calc_intake()
-        todays_intake = 0
+        today_intake = 0
         meal_cal = {}
         for meal_type in MealChoice:
             meal_cal[meal_type] = calc_meal(meal_type)
-            todays_intake += meal_cal[meal_type]
+            today_intake += meal_cal[meal_type]
         context = {'user': obj,
                    'date': today(),
                    'goal': goal,
-                   'calories_left': int(goal - todays_intake),
+                   'calories_left': int(goal - today_intake),
                    'cal_of_meals': meal_cal,
-                   'intake': todays_intake
+                   'intake': today_intake
                    }
         response = render(request, 'pal_app/fitness-app.html', context)
     return response
 
 
 def remove_product(request, product_id):
-    pr = Product.objects.get(id=product_id)
-    pr.delete()
+    Product.objects.get(id=product_id).delete()
     return redirect('/products')
 
 
@@ -127,6 +129,11 @@ def meal_data(request, meal_type):
     try:
         meal = Meal.objects.get(meal_type=meal_type, day=today())
         context['selected'] = meal.products.all()
+
+        amount_dict = {}
+        for meal_product in MealProducts.objects.filter(meal=meal):
+            amount_dict[meal_product.product.id] = str(meal_product.amount)
+        context['amounts'] = amount_dict
     except ObjectDoesNotExist:
         try:
             meal = Meal.objects.create(meal_type=meal_type)
@@ -135,13 +142,20 @@ def meal_data(request, meal_type):
             return redirect('/')
     try:
         result = MealChoice(meal_type)
+        # FIXME: Pass only result, on template side get result.name / result.value?
         context['meal_name'] = result.name
         context['meal_id'] = meal_type
         if request.method == "POST":
             selected = request.POST.getlist("products")
-            meal.products.set([])
+            meal = Meal.objects.get(meal_type=meal_type, day=today())
+            MealProducts.objects.filter(meal=meal).delete()
             for product in selected:
-                meal.products.add(product)
+                amount = request.POST['input_calories_' + str(product)]
+                if not amount:
+                    amount = 100
+                MealProducts.objects.create(product=next(x for x in product_list if x.id == int(product)),
+                                            meal=meal,
+                                            amount=amount)
             return redirect('/')
     except KeyError:
         return render(request, 'pal_app/meal-data.html', context)
