@@ -14,7 +14,7 @@
             {% if product_list %}
             {% for product in product_list %}
             <div class="form-row">
-                <div class="col">
+                <div class="col-md-4">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="products" {% if product in selected %}checked{% endif %}
                                value="{{product.id}}"
@@ -22,7 +22,7 @@
                         <label class="form-check-label" for="product{{product.id}}">{{product.name}} - {{product.calories}} cal/100g</label>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <input type="text" class="form-control" name="input_calories_{{product.id}}" placeholder="Enter amount in grams. {{product.calories}} cal/100g"
                      {% if product in selected %}value="{{amounts|get_item:product.id}}"{% endif %}>
                 </div>
